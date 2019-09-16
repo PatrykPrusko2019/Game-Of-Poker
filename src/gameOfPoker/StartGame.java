@@ -119,6 +119,32 @@ public class StartGame {
         checksWhoWon();
 
 
+        /////////////////////////////////
+            //HIGH CARD
+
+        System.out.println("\n****************test HIGH CARD :");
+        deckOfCards.returnNoPokerHandInPlayerTESTForTest(firstPlayer.getCardsOfPlayer());
+        deckOfCards.returnNoPokerHandInPlayerForTest(secondPlayer.getCardsOfPlayer());
+        checksWhoWon();
+
+        System.out.println("\n****************test HIGH CARD :");
+        deckOfCards.returnNoPokerHandInPlayerForTest(firstPlayer.getCardsOfPlayer());
+        deckOfCards.returnNoPokerHandInPlayerForTest(secondPlayer.getCardsOfPlayer());
+        checksWhoWon();
+
+
+        //////////////////////////////////
+
+        System.out.println("\n****************test 3 FIGURE HIGH CARD :  HIGH CARD : king and two ");
+        deckOfCards.returnToCardsForThreeCardsOfOneFigureTestHighCardFirst(firstPlayer.getCardsOfPlayer());
+        deckOfCards.returnToCardsForThreeCardsOfOneFigureTestHighCardSecond(secondPlayer.getCardsOfPlayer());
+        checksWhoWon();
+
+        System.out.println("\n****************test 3 FIGURE HIGH CARD :  HIGH CARD : two and two ");
+        deckOfCards.returnToCardsForThreeCardsOfOneFigureTest(firstPlayer.getCardsOfPlayer());
+        deckOfCards.returnToCardsForThreeCardsOfOneFigureTest(secondPlayer.getCardsOfPlayer());
+        checksWhoWon();
+
     }
 
 
@@ -137,49 +163,56 @@ public class StartGame {
     private void finishGame() {
 
         int firstPlayerCard = -1, secondPlayerCard = -1;
-        boolean trueOrFalse = false;
+
         for(int i = 0; i < pokerHand.length; i++) {
             if(firstPlayer.getCardLayout().equals(pokerHand[i])) {
                 firstPlayerCard = i;
-                trueOrFalse = true;
             }
-
             if(secondPlayer.getCardLayout().equals(pokerHand[i])) {
                 secondPlayerCard = i;
-                trueOrFalse = true;
             }
         }
+            int result;
+        if(firstPlayerCard > -1 || secondPlayerCard > -1) { //if sa rowne lub first , second ma jakiegos hand pokera
 
-        //sprawdzam czy sa takie same
-
-        if(trueOrFalse) {
-            if (firstPlayerCard == secondPlayerCard) {
-                System.out.println("draw in the game !!!!" + " the first and second players have -> " + firstPlayer.getCardLayout()); //remis
-            } else if (firstPlayerCard < secondPlayerCard) {
-                System.out.println("WINNER IS first player -> " + firstPlayer.getNamePlayer() + " have -> " + firstPlayer.getCardLayout());
-            } else {
-                System.out.println("WINNER IS second player -> " + secondPlayer.getNamePlayer() + " have -> " + secondPlayer.getCardLayout());
+            if(firstPlayerCard == -1) {
+                firstPlayerCard = 7 ;
+            } else if(secondPlayerCard == -1) {
+                secondPlayerCard = 7;
             }
-
+            result = 0;
         } else {
-            System.out.println("first and second player no have hand poker !!!!");
+            result = 1;
         }
 
-
+            switch (result) {
+                case 0: {
+                    if (firstPlayerCard == secondPlayerCard) {
+                        HighCard highCardResult = new HighCard();
+                        System.out.println("THERE IS DRAW !!!\nPOKER HAND IS: " + firstPlayer.getCardLayout() + " -> first player: " + firstPlayer.getNamePlayer() + " and POKER HAND IS: " + secondPlayer.getCardLayout() + " -> second player: " + secondPlayer.getNamePlayer() );
+                        highCardResult.whoWonWithTheSamePokerHand(firstPlayer, secondPlayer);
+                        break;
+                    } else if (firstPlayerCard < secondPlayerCard) { //example first= 1 < second= 5 -> winner is first
+                        System.out.println("WINNER IS first player -> " + firstPlayer.getNamePlayer() + " have -> " + firstPlayer.getCardLayout());
+                    } else {
+                        System.out.println("WINNER IS second player -> " + secondPlayer.getNamePlayer() + " have -> " + secondPlayer.getCardLayout());
+                    }
+                    break;
+                }
+                case 1: { // IF NO POKER HAND
+                    System.out.println("first player: " + firstPlayer.getNamePlayer() + " and second player: " + secondPlayer.getNamePlayer() + " no have hand poker !!!!");
+                    HighCard highCardResult = new HighCard();
+                    highCardResult.checkWhoWinner(firstPlayer, secondPlayer);
+                    break;
+                }
+            }
 
     }
 
 
 
     private void checkPlayerCards(Player player) {
-        //straightFlush -> poker
-        //fourCardsOfOneFigure -> KARETA -> 4 figury takie same
-        //fullHouse -> 1 para i 3 Figury takie same
-        //fiveCardsOfTheSameSuit -> FLUSH -> 5 kolorow takich samych
-        //threeCardsOfOneFigure -> 3 karty jednej figury
-        //twoPairOfCards -> 2 pary po Figurze
-        //pairOfCards -> 1 para po figurze
-                                                //0                 1               2         3         4                   5           6
+                                       //0                 1               2         3         4                   5           6
         pokerHand = new String[]{"Straight Flush", "Four of a Kind", "Full House", "Flush", "Three of a Kind", "Two Pairs", "One Pair"};//uklad pokerowy
 
             switch (pokerHand[0]) {
@@ -226,7 +259,7 @@ public class StartGame {
                     }
                 }
                 default: {
-                    System.out.println("PLAYER: " + player.getNamePlayer() + " has no poker hand !!!");
+                    player.setCardLayout(""); //resetujemy wartosc
                     break;
                 }
             }

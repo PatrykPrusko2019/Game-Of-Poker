@@ -208,20 +208,23 @@ public class DeckOfCards {
       arrayOfPlayerCards = cardsPlayer.getCardsOfPlayer();
 
       for(int i = 0; i < arrayOfPlayerCards.length; i++) {
-         cardActuall = arrayOfPlayerCards[i];
-         for(int j = i+1; j < arrayOfPlayerCards.length; j++) {
+         if(checkGoodIndexInCard(i) ) { //if true to continue
+            cardActuall = arrayOfPlayerCards[i];
 
-            if(cardActuall.getFace().equals(arrayOfPlayerCards[j].getFace())) {
-               fillInTableOfCardsToBeSkippedWithZeros(); //zerujemy jesli sie przypadek zdarzy np 2 asy, 2 krolow , to aby od nowa to ustawial karty do pominiecia
-               tableOfCardsToBeSkipped[i] = i+1; // 1 karta do pominiecia
-               tableOfCardsToBeSkipped[j] = j+1; // 2 karta do pominiecia
-               if(lookForTheThirdOrFourFigure()) { //3 karta do pominiecia
-                  cardsPlayer.setCurrentPlayerCardScore(tableOfCardsToBeSkipped); // przypisuje dane karty 3 takie same ASY np
-                  fillInTableOfCardsToBeSkippedWithZeros();
-                  return true;
+            for (int j = i + 1; j < arrayOfPlayerCards.length; j++) {
+
+               if (cardActuall.getFace().equals(arrayOfPlayerCards[j].getFace())) {
+                  fillInTableOfCardsToBeSkippedWithZeros(); //zerujemy jesli sie przypadek zdarzy np 2 asy, 2 krolow , to aby od nowa to ustawial karty do pominiecia
+                  tableOfCardsToBeSkipped[i] = i + 1; // 1 karta do pominiecia
+                  tableOfCardsToBeSkipped[j] = j + 1; // 2 karta do pominiecia
+                  if (lookForTheThirdOrFourFigure()) { //3 karta do pominiecia
+                     cardsPlayer.setCurrentPlayerCardScore(tableOfCardsToBeSkipped); // przypisuje dane karty 3 takie same ASY np
+                     fillInTableOfCardsToBeSkippedWithZeros();
+                     return true;
+                  }
                }
-            }
 
+            }
          }
       }
       fillInTableOfCardsToBeSkippedWithZeros();
@@ -392,6 +395,7 @@ public class DeckOfCards {
       cardsOfPlayer[4] = testDeck[18]; //
    }
 
+
    //tests 3 cards of same FIGURE
    public void returnToCardsForThreeCardsOfOneFigureTest(Card[] cardsOfPlayer) {
       cardsOfPlayer[0] = testDeck[0];  // two
@@ -399,6 +403,27 @@ public class DeckOfCards {
       cardsOfPlayer[2] = testDeck[26];  // two
       cardsOfPlayer[3] = testDeck[27]; //
       cardsOfPlayer[4] = testDeck[28]; //
+   }
+
+
+
+
+   //tests 3 cards of same FIGURE
+   public void returnToCardsForThreeCardsOfOneFigureTestHighCardFirst(Card[] cardsOfPlayer) {
+      cardsOfPlayer[0] = testDeck[0];  // two
+      cardsOfPlayer[1] = testDeck[13]; // two
+      cardsOfPlayer[2] = testDeck[26];  // two
+      cardsOfPlayer[3] = testDeck[27]; //
+      cardsOfPlayer[4] = testDeck[28]; //
+   }
+
+   // 3 cards of Figure the same -> HIGH CARD
+   public void returnToCardsForThreeCardsOfOneFigureTestHighCardSecond(Card[] cardsOfPlayer) {
+      cardsOfPlayer[0] = testDeck[1]; // ace
+      cardsOfPlayer[1] = testDeck[11]; // king
+      cardsOfPlayer[2] = testDeck[0]; // ace
+      cardsOfPlayer[3] = testDeck[24]; // king
+      cardsOfPlayer[4] = testDeck[37]; // king
    }
 
 
@@ -445,19 +470,34 @@ public class DeckOfCards {
       cardsOfPlayer[4] = testDeck[37]; // king
    }
 
+   //for tests no poker hand !!!!!!!!!!!!!!!!!!!!!
    public void returnNoPokerHandInPlayerForTest(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[17]; // ace
-      cardsOfPlayer[1] = testDeck[2]; // king
-      cardsOfPlayer[2] = testDeck[29]; // ace
-      cardsOfPlayer[3] = testDeck[39]; // king
+      cardsOfPlayer[0] = testDeck[17]; // six
+      cardsOfPlayer[1] = testDeck[2]; // four
+      cardsOfPlayer[2] = testDeck[29]; // five
+      cardsOfPlayer[3] = testDeck[39]; // two
       cardsOfPlayer[4] = testDeck[11]; // king
    }
+
+   //for tests no poker hand !!!!!!!!!!!!!!!!!!!!!
+   public void returnNoPokerHandInPlayerTESTForTest(Card[] cardsOfPlayer) {
+      cardsOfPlayer[0] = testDeck[12]; // ase
+      cardsOfPlayer[1] = testDeck[2]; // four
+      cardsOfPlayer[2] = testDeck[5]; // five
+      cardsOfPlayer[3] = testDeck[39]; // two
+      cardsOfPlayer[4] = testDeck[11]; // king
+   }
+
+
+
+
 
    // a pair of figures and three figures the same -> FULL
    public boolean pairOfFiguresAndThreeFiguresTheSame(Player cardsOfPlayer) {
 
       //sprawdzamy czy jest jedna para kart
       if( pairOfCards(cardsOfPlayer) ) {
+         completesTheCardsToBeSkipped(cardsOfPlayer);// przypisuje 2 karty ktore tworza pare do pominiecia
          //sprawdzamy czy sa 3 karty tej samej figury
          if( threeCardsOfOneFigure(cardsOfPlayer)) {
             //jest FULL to segregujemy tablice 5 cards zawodnika
