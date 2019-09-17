@@ -5,10 +5,9 @@ public class GameOfPoker_1 {
     public static void main(String[] args) {
 
 
-  //  StartGame s = new StartGame();
+         StartGame s = new StartGame(); // game of poker
 
-        StartGame s = new StartGame("test");
-   // s.checksWhoWon();
+         // StartGame test = new StartGame("test"); // tests
 
 
     }

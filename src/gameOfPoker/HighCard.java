@@ -11,14 +11,36 @@ public class HighCard {
 
     private int highCardSecondPlayer;
     private int kickerSecondPlayer;
+    private boolean isUsedKicker;
+    private boolean showKicker;
 
     public HighCard() {
          this.figures = new String[]{"Two", "Three", "Four", "Five", "Six", // figury -> 0 - 12
                  "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace"};
          this.highCardTabFirstPlayer = new int[5];
          this.highCardTabSecondPlayer = new int[5];
+         this.isUsedKicker = false;
+         this.showKicker = false;
     }
 
+    public boolean isShowKicker() {
+        return showKicker;
+    }
+    public void setShowKicker(boolean showKicker) {
+        this.showKicker = showKicker;
+    }
+    public String[] getFigures() {
+        return figures;
+    }
+    public void setFigures(String[] figures) {
+        this.figures = figures;
+    }
+    public boolean isUsedKicker() {
+        return isUsedKicker;
+    }
+    public void setUsedKicker(boolean usedKicker) {
+        isUsedKicker = usedKicker;
+    }
     public int getHighCardFirstPlayer() {
         return highCardFirstPlayer;
     }
@@ -60,34 +82,13 @@ public class HighCard {
 
         System.out.println("****** HIGH CARD ******\n no poker hands "); // wysoka karta decyduje kto wygral
 
-        completesTheCardsOfFirstPlayer(firstPlayer.getCardsOfPlayer()); //przypisujemy wartosc figury 1 playerowi
-        completesTheCardsOfFirstPlayer(secondPlayer.getCardsOfPlayer()); //przypisujemy wartosc figury 2 playerowi
+        completesTheCardsOfPlayer(firstPlayer.getCardsOfPlayer(), 1); //przypisujemy wartosc figury 1 playerowi
+        completesTheCardsOfPlayer(secondPlayer.getCardsOfPlayer(), 2); //przypisujemy wartosc figury 2 playerowi
 
         setsHighCardAndKicker(getHighCardTabFirstPlayer() , 1 );
         setsHighCardAndKicker(getHighCardTabSecondPlayer(), 2 );
 
-       int highCard = checksWhoWon();
-
-        String highCardFirst = figures[highCardFirstPlayer];
-        String highCardSecond = figures[highCardSecondPlayer];
-        String kickerFirst = figures[kickerFirstPlayer];
-        String kickerSecond = figures[kickerSecondPlayer];
-
-
-       switch(highCard) {
-           case 0: {
-               System.out.println("DRAW: High card is -> " + highCardFirst);
-               break;
-           }
-           case 1: {
-               System.out.println("winner is player first: " + firstPlayer.getNamePlayer() + "\nHIGH CARD: " +  highCardFirst + ", KICKER: " + kickerFirst);
-               break;
-           }
-           case 2: {
-               System.out.println("winner is player second: " + secondPlayer.getNamePlayer() + "\nHIGH CARD: " +  highCardSecond + ", KICKER: " + kickerSecond);
-               break;
-           }
-       }
+        showResult(firstPlayer, secondPlayer);
     }
 
     //if 0 -> remis, if 1 - winner player 1, 2 - winner player 2
@@ -95,9 +96,10 @@ public class HighCard {
 
         int resultFirst, resultSecond;
         //sprawdzamy czy taka sama wysoka karta
-        if(highCardFirstPlayer == highCardSecondPlayer) {
-            resultFirst = highCardFirstPlayer - kickerFirstPlayer;
-            resultSecond = highCardSecondPlayer - kickerSecondPlayer;
+        if(this.highCardFirstPlayer == this.highCardSecondPlayer) { //jesli true to uzyj z kickerem
+            setUsedKicker(true); // uzywamy kickera przy wyniku
+            resultFirst = this.highCardFirstPlayer - this.kickerFirstPlayer;
+            resultSecond = this.highCardSecondPlayer - this.kickerSecondPlayer;
             if(resultFirst == resultSecond) {
                 return 0;
             } else if(resultFirst < resultSecond) { // example 1 > 2 -> winner 1 player bo mniejsza roznica wyniku
@@ -105,7 +107,7 @@ public class HighCard {
             } else {
                 return 2;
             }
-        } else if(highCardFirstPlayer > highCardSecondPlayer) {
+        } else if (this.highCardFirstPlayer > this.highCardSecondPlayer) {
             return 1;
         } else {
             return 2;
@@ -159,8 +161,8 @@ public class HighCard {
 
         System.out.println("****** HIGH CARD:  ******\nhigh card with the same poker hand\n"); // wysoka karta decyduje kto wygral
 
-        completesTheCardsOfFirstPlayer(firstPlayer.getCardsOfPlayer()); //przypisujemy wartosc figury 1 playerowi
-        completesTheCardsOfFirstPlayer(secondPlayer.getCardsOfPlayer()); //przypisujemy wartosc figury 2 playerowi
+        completesTheCardsOfPlayer(firstPlayer.getCardsOfPlayer(), 1); //przypisujemy wartosc figury 1 playerowi
+        completesTheCardsOfPlayer(secondPlayer.getCardsOfPlayer(),2); //przypisujemy wartosc figury 2 playerowi
 
         if( checksWhatPokerSystem(firstPlayer, secondPlayer) ) { // if true only high card or kicker by used
 
@@ -177,25 +179,55 @@ public class HighCard {
 
 
     private void showResult(Player firstPlayer, Player secondPlayer) {
-        int highCard = whoWonWithTheSamePokerHandSecond();
 
-        String highCardFirst = figures[highCardFirstPlayer];
-        String highCardSecond = figures[highCardSecondPlayer];
+        int highCard = checksWhoWon();
+        String highCardFirst = this.figures[getHighCardFirstPlayer()];
+        String highCardSecond = this.figures[getHighCardSecondPlayer()];
+        String kickerFirst;
+        String kickerSecond;
 
-        switch (highCard) {
+        if(isShowKicker() ) {
+            kickerFirst = " empty";
+            kickerSecond = " empty";
+        } else {
+            kickerFirst = this.figures[getKickerFirstPlayer()];
+            kickerSecond = this.figures[getKickerSecondPlayer()];
+        }
+        System.out.println("\nRESULT : ");
+
+        switch(highCard) {
             case 0: {
-                System.out.println("DRAW: High card is -> " + highCardFirst);
+                if(isUsedKicker()) {
+                    System.out.println("THERE IS DRAW. The high card is the same for both players -> " + highCardFirst +
+                            "\n***************************************\n" + "THERE IS DRAW. The kicker card is the same for both players -> " + kickerFirst);
+                }
                 break;
             }
             case 1: {
-                System.out.println("winner is player first: " + firstPlayer.getNamePlayer() + "\nHIGH CARD: " + highCardFirst);
+                if(isUsedKicker()) {
+                    System.out.println("THERE IS DRAW. The high card is the same for both players -> " + highCardFirst +
+                            "\n***************************************\n" + "larger kicker card -> " + kickerFirst +
+                            "\nWINNER IS PLAYER FIRST: " + firstPlayer.getNamePlayer());
+
+                } else {
+                    System.out.println("***************************************\nWINNER IS PLAYER FIRST: " + firstPlayer.getNamePlayer() + "\nHIGH CARD: " + highCardFirst);
+                }
                 break;
             }
             case 2: {
-                System.out.println("winner is player second: " + secondPlayer.getNamePlayer() + "\nHIGH CARD: " + highCardSecond);
+                if(isUsedKicker()) {
+                    System.out.println("THERE IS DRAW. The high card is the same for both players -> " + highCardFirst +
+                            "\n***************************************\n" + "larger kicker card -> " + kickerSecond +
+                            "\nWINNER IS PLAYER SECOND: " + secondPlayer.getNamePlayer());
+                } else {
+                    System.out.println("***************************************\nWINNER IS PLAYER SECOND: " + secondPlayer.getNamePlayer() + "\nHIGH CARD: " + highCardSecond);
+                }
                 break;
             }
         }
+
+        setUsedKicker(false);
+        setShowKicker(false);
     }
 
 
@@ -215,6 +247,7 @@ public class HighCard {
         switch (pokerHand) {
             case "Straight Flush": {
                 //do nothing only high card
+                setShowKicker(true);
                 exit = true;
                 break;
             }
@@ -233,6 +266,7 @@ public class HighCard {
             }
             case "Flush": { //five same suits of cards
                 //do nothing only high card
+                setShowKicker(true);
                 exit = true;
                 break;
             }
@@ -267,49 +301,91 @@ public class HighCard {
     }
     private boolean whoWonWithOnePair() {
         //sprawdzamy po 1 pair
-        if(complelesOfTheHighCards(2, false)) {
+        if(complelesOfTheHighCards(2)) {
             return true;
         } else {
             //ustawiamy pair na -1
-            complelesOfTheHighCards(2, true);
+            deletesThePokerHand(getHighCardFirstPlayer()); // bo obu zawodnikow ma taki sam high card
+            setHighCardFirstPlayer(-2);
+            setHighCardSecondPlayer(-2);
             return false;
         }
     }
 
     private boolean whoWonTwoPairs() {
         //sprawdzamy po 1 pair
-        if(complelesOfTheHighCards(2, false)) {
+        if(complelesOfTheHighCards(2)) {
             return true;
         } else {
 
-            complelesOfTheHighCards(2, true); //zmiana wartosci na -1
+            deletesThePokerHand(getHighCardFirstPlayer()); // bo obu zawodnikow ma taki sam high card
             //sprawdzamy po 2 pair
-            if(complelesOfTheHighCards(2, false)) {
+            if(complelesOfTheHighCards(2)) {
                 return true;
             } else {
+                deletesThePokerHand(getHighCardFirstPlayer()); // bo obu zawodnikow ma taki sam high card
+                setHighCardFirstPlayer(-2);
+                setHighCardSecondPlayer(-2);
+                setShowKicker(true);
                 return false;
             }
         }
     }
+
+
     private boolean whoWonThreeOfKind() {
         //sprawdzamy najpierw 3 Figury -> high Card
-        if(complelesOfTheHighCards(3, false)) {
+        if(complelesOfTheHighCards(3)) {
             return true;
         } else { // takie same high cards
-            complelesOfTheHighCards(3, true); //zmiana wartosci -1
+            deletesThePokerHand(getHighCardFirstPlayer()); // bo obu zawodnikow ma taki sam high card
+            setHighCardFirstPlayer(-2);
+            setHighCardSecondPlayer(-2);
             return false;
         }
     }
+
+    //checks the higher card
+    private boolean whoWonWithFourOfKind() {
+        if(complelesOfTheHighCards(4)) {
+            return true; //rozne high cards
+        } else {
+            deletesThePokerHand(getHighCardFirstPlayer()); // usuwamy na -1 -> 4 karty
+            setHighCardFirstPlayer(-2);
+            setHighCardSecondPlayer(-2);
+            setShowKicker(true);
+            return false; //takie same high cards
+        }
+
+        //ustawienie 2 high cards -> and result who won !!!
+    }
+
     private void whoWonWIthFullHouse() {
         //sprawdzamy najpierw 3 Figury -> high Card
-        if( ! complelesOfTheHighCards(3, false)) { // 3 figures -> if ! false == true szukaj po parze
-            complelesOfTheHighCards(2, false); // pair
+        if( ! complelesOfTheHighCards(3)) { // 3 figures -> if ! false == true szukaj po parze
+            deletesThePokerHand(getHighCardFirstPlayer()); // bo obu zawodnikow ma taki sam high card
+            complelesOfTheHighCards(2); // search for pair -> jesli taka sama high card obu zawodnikow -> to remis
+            setShowKicker(true);
+        }
+    }
+
+    private void deletesThePokerHand(int valueOfPokerHand) {
+        for(int i = 0; i < highCardTabFirstPlayer.length; i++) {
+            if(valueOfPokerHand == highCardTabFirstPlayer[i]) {
+                highCardTabFirstPlayer[i] = -1;
+            }
+        }
+        for(int i = 0; i < highCardTabSecondPlayer.length; i++) {
+            if(valueOfPokerHand == highCardTabSecondPlayer[i]) {
+                highCardTabSecondPlayer[i] = -1;
+            }
         }
     }
 
     //zwraca true jesli sa rozne wartosc high cards obu zawodnikow
     //zwraca false jesli sa takie same wartosci high cards obu zawodnikow
-    private boolean complelesOfTheHighCards(int sameTheCards, boolean valueToSkip) {
+    private boolean complelesOfTheHighCards(int sameTheCards) {
+        sameTheCards--; // aby jak szuka pary to wystarczy jak 2 = 2-1  -> 1 raz wystapi para
         int counter = 0, searchThreeFigures;
 
             for (int i = 0; i < highCardTabFirstPlayer.length; i++) {
@@ -319,15 +395,14 @@ public class HighCard {
                 for (int j = i + 1; j < highCardTabFirstPlayer.length; j++) {
 
                     if (searchThreeFigures == highCardTabFirstPlayer[j]) {
-                        if(valueToSkip) { //if true zmien wartosc na -1
-                            highCardTabFirstPlayer[j] = -1;
-                        }
                         counter++;
                     }
                 }
                 if (counter == sameTheCards) {
                     setHighCardFirstPlayer(searchThreeFigures);
                     break; //exit to loop
+                } else {
+                    counter = 0;
                 }
             }
 
@@ -339,19 +414,16 @@ public class HighCard {
                 for (int j = i + 1; j < highCardTabSecondPlayer.length; j++) {
 
                     if (searchThreeFigures == highCardTabSecondPlayer[j]) {
-                        if(valueToSkip) { //if true zmien wartosc na -1
-                            highCardTabSecondPlayer[j] = -1;
-                        }
                         counter++;
                     }
                 }
                 if (counter == sameTheCards) {
                     setHighCardSecondPlayer(searchThreeFigures);
                     break; //exit to loop
+                } else {
+                    counter = 0;
                 }
             }
-
-            if(valueToSkip) { return false; }
 
             if (getHighCardFirstPlayer() == getHighCardSecondPlayer()) {
                 return false;
@@ -360,41 +432,23 @@ public class HighCard {
             }
     }
 
-
-
-    //checks the higher card
-    private boolean whoWonWithFourOfKind() {
-        return complelesOfTheHighCards(4, false);
-        //ustawienie 2 high cards -> and result who won !!!
-    }
-
-
-    private void completesTheCardsOfFirstPlayer(Card[] cardsOfPlayer) {
+    private void completesTheCardsOfPlayer(Card[] cardsOfPlayer, int whichPlayer) {
+        int[] tempCardHeight = new int[5];
         for(int i = 0; i < cardsOfPlayer.length; i++) {
             String cardOfFigure = cardsOfPlayer[i].getFace();
 
             for(int j = 0; j < figures.length; j++ ) {
                 if(figures[j].equals(cardOfFigure)) {
-                    highCardTabFirstPlayer[i] = j;
+                    tempCardHeight[i] = j;
                 }
             }
         }
-    }
-
-
-    //if 0 -> remis, if 1 - winner player 1, 2 - winner player 2
-    private int whoWonWithTheSamePokerHandSecond() {
-
-        //sprawdzamy czy taka sama wysoka karta
-        if(this.highCardFirstPlayer == this.highCardSecondPlayer) {
-            return 0;
-        } else if(this.highCardFirstPlayer > this.highCardSecondPlayer) {
-            return 1;
+        if(whichPlayer == 1) {
+            setHighCardTabFirstPlayer(tempCardHeight);
         } else {
-            return 2;
+            setHighCardTabSecondPlayer(tempCardHeight);
         }
     }
-
 
 
 }

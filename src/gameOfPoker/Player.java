@@ -69,7 +69,7 @@ public class Player {
 
     public void showCardsPlayer(Player player) {
         System.out.println("\nPLAYER: " + player.getNamePlayer());
-        for(int i = 0; i < player.currentPlayerCardScore.length; i++) {
+        for(int i = 0; i < player.getCardsOfPlayer().length; i++) {
 
                 System.out.println("-" + player.cardsOfPlayer[i].getFace() + " " + player.cardsOfPlayer[i].getSuit());
 
