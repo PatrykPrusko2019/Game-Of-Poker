@@ -35,3 +35,6 @@ first a poker hand, then the rest of the cards, if the same high cards are follo
 
 
 If both players don't have a poker hand, the high card or kicker decides.
+
+
+Test class for testing.
