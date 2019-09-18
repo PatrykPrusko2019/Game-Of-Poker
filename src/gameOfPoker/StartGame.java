@@ -10,38 +10,49 @@ public class StartGame {
 
     public StartGame() {
 
-        System.out.println("GAME OF POKER: ");
+        System.out.println("GAME OF CLASSIC POKER: ");
 
         deckOfCards = new DeckOfCards();
 
-        deckOfCards.shuffle(); //tasujemy karty
+        deckOfCards.shuffle(); //shuffles the cards
 
         this.firstPlayer = new Player("Patrick");
         this.secondPlayer = new Player("Patryshia");
 
-        deckOfCards.dealCards(firstPlayer); //rozdanie
+        deckOfCards.dealCards(firstPlayer); // deal
         deckOfCards.dealCards(secondPlayer);
 
         checksWhoWon();
 
-        deckOfCards.setCurrentCard(0); //zerujemy aktualna karte
+        deckOfCards.setCurrentCard(0); //sets the current card
     }
 
-
-
-    //testujemy
+    public DeckOfCards getDeckOfCards() {
+        return deckOfCards;
+    }
+    public void setDeckOfCards(DeckOfCards deckOfCards) {
+        this.deckOfCards = deckOfCards;
+    }
+    public Player getFirstPlayer() {
+        return firstPlayer;
+    }
+    public void setFirstPlayer(Player firstPlayer) {
+        this.firstPlayer = firstPlayer;
+    }
+    public Player getSecondPlayer() {
+        return secondPlayer;
+    }
+    public void setSecondPlayer(Player secondPlayer) {
+        this.secondPlayer = secondPlayer;
+    }
+    //tests
     public StartGame(String test) {
-        System.out.println("tests");
-        deckOfCards = new DeckOfCards();
+
+        this.deckOfCards = new DeckOfCards();
         this.firstPlayer = new Player("Patrick");
         this.secondPlayer = new Player("Patryshia");
 
-        Test tests = new Test();
-        tests.tests(firstPlayer, secondPlayer, deckOfCards);
-
-
     }
-
 
 
     public void checksWhoWon() {
@@ -68,7 +79,7 @@ public class StartGame {
             }
         }
             int result;
-        if(firstPlayerCard > -1 || secondPlayerCard > -1) { //if sa rowne lub first , second ma jakiegos hand pokera
+        if(firstPlayerCard > -1 || secondPlayerCard > -1) {
 
             if(firstPlayerCard == -1) {
                 firstPlayerCard = 7 ;
@@ -80,6 +91,7 @@ public class StartGame {
             result = 1;
         }
 
+        System.out.println();
             switch (result) {
                 case 0: {
                     if (firstPlayerCard == secondPlayerCard) {
@@ -87,7 +99,7 @@ public class StartGame {
                         System.out.println("THERE IS DRAW !!!\nPOKER HAND IS: " + firstPlayer.getCardLayout() + " -> first player: " + firstPlayer.getNamePlayer() + " and POKER HAND IS: " + secondPlayer.getCardLayout() + " -> second player: " + secondPlayer.getNamePlayer() );
                         highCardResult.whoWonWithTheSamePokerHand(firstPlayer, secondPlayer);
                         break;
-                    } else if (firstPlayerCard < secondPlayerCard) { //example first= 1 < second= 5 -> winner is first
+                    } else if (firstPlayerCard < secondPlayerCard) { //for example first= 1 < second= 5 -> winner is first
                         System.out.println("WINNER IS first player -> " + firstPlayer.getNamePlayer() + " have -> " + firstPlayer.getCardLayout());
                     } else {
                         System.out.println("WINNER IS second player -> " + secondPlayer.getNamePlayer() + " have -> " + secondPlayer.getCardLayout());
@@ -108,7 +120,7 @@ public class StartGame {
 
     private void checkPlayerCards(Player player) {
                                        //0                 1               2         3         4                   5           6
-        pokerHand = new String[]{"Straight Flush", "Four of a Kind", "Full House", "Flush", "Three of a Kind", "Two Pairs", "One Pair"};//uklad pokerowy
+        pokerHand = new String[]{"Straight Flush", "Four of a Kind", "Full House", "Flush", "Three of a Kind", "Two Pairs", "One Pair"};//poker hand
 
             switch (pokerHand[0]) {
                 case "Straight Flush": {
@@ -154,7 +166,7 @@ public class StartGame {
                     }
                 }
                 default: {
-                    player.setCardLayout(""); //resetujemy wartosc
+                    player.setCardLayout(""); //reset value
                     break;
                 }
             }

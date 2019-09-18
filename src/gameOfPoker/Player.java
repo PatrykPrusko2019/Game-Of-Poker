@@ -5,7 +5,7 @@ public class Player {
     private Card[] cardsOfPlayer;
     private String namePlayer;
     private int[] currentPlayerCardScore;
-    private String cardLayout; // uklad kart
+    private String cardLayout; // poker hand
 
     public Player(String namePlayer) {
         this.cardsOfPlayer = new Card[5];
@@ -26,7 +26,7 @@ public class Player {
 
     public void setCurrentPlayerCardScore(int[] newResult) {
 
-        for(int i = 0; i < newResult.length; i++) {//przypisuje karty do pominiecia i do wyswietlenia na koncu
+        for(int i = 0; i < newResult.length; i++) {
             if(newResult[i] != 0) {
                 currentPlayerCardScore[i] = newResult[i];
             }
@@ -49,7 +49,7 @@ public class Player {
         this.namePlayer = namePlayer;
     }
 
-    //tworzymy kary gracza
+    //creates player cards
     public void createPlayerCards(Card newCard, int index) {
         cardsOfPlayer[index] = newCard;
 
@@ -68,7 +68,7 @@ public class Player {
 
 
     public void showCardsPlayer(Player player) {
-        System.out.println("\nPLAYER: " + player.getNamePlayer());
+        System.out.println("\nPLAYER: " + player.getNamePlayer() + "\nCARDS:");
         for(int i = 0; i < player.getCardsOfPlayer().length; i++) {
 
                 System.out.println("-" + player.cardsOfPlayer[i].getFace() + " " + player.cardsOfPlayer[i].getSuit());

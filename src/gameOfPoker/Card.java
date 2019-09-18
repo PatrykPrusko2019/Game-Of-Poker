@@ -1,14 +1,14 @@
-package gameOfPoker;// Rysunek 7.9. Card.java
-// Klasa Card reprezentuje kartę do gry.
+package gameOfPoker;
+//The Card class represents a playing card
 
 public class Card {
-   private final String face; // Figura karty ("As", "Dwójka", ...)
-   private final String suit; // Kolor karty ("kier", "trefl", ...)
+   private final String face;
+   private final String suit;
 
-   // Konstruktor dwuargumentowy inicjalizuje zmienne face i suit.
+
    public Card(String cardFace, String cardSuit) {
-      this.face = cardFace; // Inicjalizacja figury.
-      this.suit = cardSuit; // Inicjalizacja koloru.
+      this.face = cardFace;
+      this.suit = cardSuit;
    }
 
    public String getFace() {
@@ -19,7 +19,6 @@ public class Card {
       return this.suit;
    }
 
-   // Zwraca tekstową reprezentację obiektu Card.
    public String toString() {             
       return face + " " + suit;        
    }

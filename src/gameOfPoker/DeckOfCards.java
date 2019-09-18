@@ -1,26 +1,7 @@
-package gameOfPoker;// Rysunek 7.10. DeckOfCards.java
-// Klasa DeckOfCards reprezentuje talię kart do gry.
-/**
- * suit /suːt/ – kolor (w kartach)
- * diamond /ˈdaɪəmənd/ – karo
- * heart /hɑː(r)t/ – kier
- * club /klʌb/ – trefl
- * spade /speɪd/ – pik
- * playing cards /ˈpleɪɪŋ ˌkɑː(r)dz/ – karty do gry
- * joker /ˈdʒəʊkə(r)/, (AmE) /ˈdʒoʊkə(r)/ – dżoker
- * ace /eɪs/ – as
- * king /kɪŋ/ – król
- * queen /kwiːn/ – dama
- * jack /dʒæk/ , knave /neɪv/ – walet
- * card game /kɑː(r)d ɡeɪm/ – gra w karty, gra karciana
- * play cards /pleɪ ˌkɑː(r)dz/ – grać w karty
- * card /ˌkɑː(r)d/ – karta do gry
- * pack of cards /pæk əv ˌkɑː(r)dz/ , deck of cards (AmE) /dek əv ˌkɑː(r)dz/ – talia kart
- */
+package gameOfPoker;
 
 import java.security.SecureRandom;
 
-//talia kart -> deck of cards
 public class DeckOfCards {
    private int[] tableOfCardsToBeSkipped = new int[5];
    private Card[] arrayOfPlayerCards;
@@ -31,60 +12,55 @@ public class DeckOfCards {
 
    private Card[] testDeck = new Card[NUMBER_OF_CARDS];
 
-   // private int[] actualResultCardOfPlayer = new int[5];
-   // Generator liczb losowych.
    private static final SecureRandom randomNumbers = new SecureRandom();
-   private static final int NUMBER_OF_CARDS = 52; // Stała liczba obiektów Card.
+   private static final int NUMBER_OF_CARDS = 52; // final number of Card objects
 
-   private Card[] deck = new Card[NUMBER_OF_CARDS]; // Referencje do Card.
-   private int currentCard = 0; // Indeks następnej karty do wydania (0-51).
+   private Card[] deck = new Card[NUMBER_OF_CARDS];
+   private int currentCard = 0; // Index of next issue cards (0-51).
 
-   // Konstruktor wypełnia talię kart.
-   public DeckOfCards() {  //suits -> kolor, faces -> twarze/figury
-      String[] faces = {"Two", "Three", "Four", "Five", "Six", // figury
+   // fills the deck of cards
+   public DeckOfCards() {
+      String[] faces = {"Two", "Three", "Four", "Five", "Six",
          "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King" , "Ace"};
-      String[] suits = {"diamond", "heart", "club", "spade"};   //kolory
+      String[] suits = {"diamond", "heart", "club", "spade"};
 
-      // Wypełnij talię obiektami Card.
       for (int count = 0; count < deck.length; count++) {
          deck[count] =
-            new Card(faces[count % 13], suits[count / 13]); //specjalny algorytm -> co 13 count przypisuje 13 figur po jednym kolorze
+            new Card(faces[count % 13], suits[count / 13]); // every 13 count assigns 13 figures of one color
       }
 
       //for tests
       for(int i = 0; i < faces.length; i++) {
-         cardsStringOfFaces[i] = faces[i]; //przypisuje figury kolejnosc !!!!!
+         cardsStringOfFaces[i] = faces[i]; //assigns the order to the figure
       }
-
 
       for(int i = 0; i < deck.length; i++ ) {
          testDeck[i] = deck[i];
       }
-      /////
-
    }
 
-   // Przetasuj talię kart algorytmem jednoprzebiegowym.
+   public Card[] getTestDeck() {
+      return testDeck;
+   }
+   // Shuffle the deck of cards
    public void shuffle() {
-      // Następne wywołanie metody dealCard powinno zaczynać się ponownie od deck[0].
 
-      // Dla każdej Card wybierz inną, losową Card (0-51) i zamień je.
+      //For each Card, select a different, random Card (0-51) and replace them.
       for (int first = 0; first < deck.length; first++) {
-         // Wybierz liczbę losową między 0 i 51.
+         //Choose a random number between 0 and 51.
          int second = randomNumbers.nextInt(NUMBER_OF_CARDS);
 
-         // Zamień aktualne Card z losowo wybranym Card.
+         //Swap the current Card with a randomly selected Card.
          Card temp = deck[first];
          deck[first] = deck[second];
          deck[second] = temp;
       }
    }
 
-   // Wydaj jedną kartę z talii.
-   //deck -> talia kart
+   //Spend one card from the deck
    public void dealCards(Player player) {
 
-      for(int i = 0; i < player.getCardsOfPlayer().length; i++, currentCard++) { //karty danego gracza po 5 kart
+      for(int i = 0; i < player.getCardsOfPlayer().length; i++, currentCard++) {
          if(currentCard < deck.length) {
             player.createPlayerCards(deck[currentCard], i);
          }
@@ -92,23 +68,8 @@ public class DeckOfCards {
 
    }
 
-
-   //ustawiam na nowo obecna karte
    public void setCurrentCard (int currentCard) {
       this.currentCard = currentCard;
-   }
-
-   //wyswietla dane karty gracza
-   public void showPlayerCards(Player playerCards) {
-
-      arrayOfPlayerCards = playerCards.getCardsOfPlayer();
-
-      System.out.println("cards of player : " + playerCards.getNamePlayer());
-
-      for(int i = 0; i < arrayOfPlayerCards.length; i++) {
-         System.out.println( (i + 1) + " -> " + arrayOfPlayerCards[i].getFace() + " " + arrayOfPlayerCards[i].getSuit() );
-      }
-
    }
 
    //one pair
@@ -116,12 +77,12 @@ public class DeckOfCards {
       arrayOfPlayerCards = playerCards.getCardsOfPlayer();
 
       for(int i = 0; i < arrayOfPlayerCards.length; i++) {
-         cardActuall = arrayOfPlayerCards[i]; // 1 karta
+         cardActuall = arrayOfPlayerCards[i]; // 1 card
          for(int j = i+1; j < arrayOfPlayerCards.length; j++) {
 
-            //sprawdza po figurze
-            if( cardActuall.getFace().equals(arrayOfPlayerCards[j].getFace()) ) { //jesli karta aktualnie sprawdzana jest taka sama co w 5 kartach gracza to true
-               secondCard = arrayOfPlayerCards[j]; //2 karta
+            //checks by figure
+            if( cardActuall.getFace().equals(arrayOfPlayerCards[j].getFace()) ) { //if the card currently being checked is the same as the 5 player's cards then true
+               secondCard = arrayOfPlayerCards[j]; //2 card
                tableOfCardsToBeSkipped[i] = i+1;
                tableOfCardsToBeSkipped[j] = j+1;
                playerCards.setCurrentPlayerCardScore(tableOfCardsToBeSkipped);
@@ -138,23 +99,22 @@ public class DeckOfCards {
    //two pairs
    public boolean twoPairOfCards(Player playerTwoPair) {
 
-      if (pairOfCards(playerTwoPair)) {   //jesli jest jedna para to spawdz czy jest druga para
-         completesTheCardsToBeSkipped(playerTwoPair);// przypisuje 2 karte ktora tworzy pare
+      if (pairOfCards(playerTwoPair)) {   //if there is one pair, check if there is another pair
+         completesTheCardsToBeSkipped(playerTwoPair);//assigns 2 cards to create a pair
 
          arrayOfPlayerCards = playerTwoPair.getCardsOfPlayer();
 
-
          for (int i = 0; i < arrayOfPlayerCards.length; i++) {
-                  if(checkGoodIndexInCard(i)) { // brak takiego indeksu do pominiecia
+                  if(checkGoodIndexInCard(i)) {
                      for (int j = i + 1; j < arrayOfPlayerCards.length; j++) {
 
-                        if(checkGoodIndexInCard(j)) { // brak takiego indeksu do pominiecia
+                        if(checkGoodIndexInCard(j)) { // no such index to omit -> true
 
                            if (arrayOfPlayerCards[i].getFace().equals(arrayOfPlayerCards[j].getFace())) {
-                              tableOfCardsToBeSkipped[i] = i + 1; // 3 karta -> drugiej pary
-                              tableOfCardsToBeSkipped[j] = j + 1; // 4 karta -> drugiej pary
-                              playerTwoPair.setCurrentPlayerCardScore(tableOfCardsToBeSkipped);//przypisujemy tablice int z danymi kartami
-                              fillInTableOfCardsToBeSkippedWithZeros(); //zerujemy tablice z indeksami do pominiecia
+                              tableOfCardsToBeSkipped[i] = i + 1; // 3 card -> second pair
+                              tableOfCardsToBeSkipped[j] = j + 1; // 4 card -> second pair
+                              playerTwoPair.setCurrentPlayerCardScore(tableOfCardsToBeSkipped);
+                              fillInTableOfCardsToBeSkippedWithZeros(); //resets arrays with indexes to skip
                               return true;
                            }
                         }
@@ -164,11 +124,11 @@ public class DeckOfCards {
          }
 
       }
-      fillInTableOfCardsToBeSkippedWithZeros(); //zerujemy tablice z indeksami do pominiecia
+      fillInTableOfCardsToBeSkippedWithZeros();
       return false;
    }
 
-   //zerujemy tablice z indeksami do pominiecia
+   //resets arrays with indexes to skip
    private void fillInTableOfCardsToBeSkippedWithZeros() {
       for (int i = 0; i < tableOfCardsToBeSkipped.length; i++) {
          tableOfCardsToBeSkipped[i] = 0;
@@ -176,49 +136,49 @@ public class DeckOfCards {
    }
 
    private boolean checkGoodIndexInCard(int indexCard) {
-      indexCard++; //zwiekszamy o 1
+      indexCard++;
       for(int i = 0; i < tableOfCardsToBeSkipped.length; i++) {
-         if(indexCard == tableOfCardsToBeSkipped[i]) { //jesli np 2 indexCard = 1 a w tableOfCardsToBeSkipped[0] = 1 czyli 1 == [0]=1 -> pomin karte
-            return false; // pomin
+         if(indexCard == tableOfCardsToBeSkipped[i]) {
+            return false;
          }
       }
-      return true; // idz dalej
+      return true;
    }
 
-   //uzupelnia karty do pominiecia w tablicy -> tableOfCardsToBeSkipped
+   //completes the cards to be skipped in the table -> tableOfCardsToBeSkipped
    private void completesTheCardsToBeSkipped(Player playerTwoPair) {
 
       for(int i = 0; i < playerTwoPair.getCardsOfPlayer().length; i++) {
          if(cardActuall.equals(playerTwoPair.getCardsOfPlayer()[i]) ) {
-            tableOfCardsToBeSkipped[i] = i + 1; // pierwsza karta przypisujemy nr indeksu do pominiecia
+            tableOfCardsToBeSkipped[i] = i + 1; //the first card assigns an index number to skip
          }
       }
 
       for(int i = 0; i < playerTwoPair.getCardsOfPlayer().length; i++) {
-            if (secondCard.equals(playerTwoPair.getCardsOfPlayer()[i]) ) { // po figurze
-               secondCard = playerTwoPair.getCardsOfPlayer()[i]; // 2 karta
-               tableOfCardsToBeSkipped[i] = i + 1; // druga karta przypisujemy nr indeksu do pominiecia
+            if (secondCard.equals(playerTwoPair.getCardsOfPlayer()[i]) ) { // by figure
+               secondCard = playerTwoPair.getCardsOfPlayer()[i]; // 2 card
+               tableOfCardsToBeSkipped[i] = i + 1; //the second card assigns an index number to skip
             }
       }
 
    }
 
-   // trzy karty jednej figury
+
    public boolean threeCardsOfOneFigure(Player cardsPlayer) {
       arrayOfPlayerCards = cardsPlayer.getCardsOfPlayer();
 
       for(int i = 0; i < arrayOfPlayerCards.length; i++) {
-         if(checkGoodIndexInCard(i) ) { //if true to continue
+         if(checkGoodIndexInCard(i) ) {
             cardActuall = arrayOfPlayerCards[i];
 
             for (int j = i + 1; j < arrayOfPlayerCards.length; j++) {
 
                if (cardActuall.getFace().equals(arrayOfPlayerCards[j].getFace())) {
-                  fillInTableOfCardsToBeSkippedWithZeros(); //zerujemy jesli sie przypadek zdarzy np 2 asy, 2 krolow , to aby od nowa to ustawial karty do pominiecia
-                  tableOfCardsToBeSkipped[i] = i + 1; // 1 karta do pominiecia
-                  tableOfCardsToBeSkipped[j] = j + 1; // 2 karta do pominiecia
-                  if (lookForTheThirdOrFourFigure()) { //3 karta do pominiecia
-                     cardsPlayer.setCurrentPlayerCardScore(tableOfCardsToBeSkipped); // przypisuje dane karty 3 takie same ASY np
+                  fillInTableOfCardsToBeSkippedWithZeros(); // resets if the case happens, for example, 2 aces, 2 kings, so that he sets cards to be skipped again
+                  tableOfCardsToBeSkipped[i] = i + 1; // first card to skip
+                  tableOfCardsToBeSkipped[j] = j + 1; // second card to skip
+                  if (lookForTheThirdOrFourFigure()) { //third card to skip
+                     cardsPlayer.setCurrentPlayerCardScore(tableOfCardsToBeSkipped);
                      fillInTableOfCardsToBeSkippedWithZeros();
                      return true;
                   }
@@ -231,13 +191,13 @@ public class DeckOfCards {
       return false;
    }
 
-   //szukamy 3 lub 4 figur
+   //looking for 3 or 4 figures
    private boolean lookForTheThirdOrFourFigure() {
       for(int i = 0; i < arrayOfPlayerCards.length; i++) {
          if(checkGoodIndexInCard(i)) {
                  if(cardActuall.getFace().equals(arrayOfPlayerCards[i].getFace())) {
-                    tableOfCardsToBeSkipped[i] = i+1; //3 karta i 4 karta
-                    return true; // sa 3 karty o tym samym figurze np 3 damy lub 4 damy  !!!!
+                    tableOfCardsToBeSkipped[i] = i+1; //3 card or 4 card
+                    return true;
                  }
          }
       }
@@ -251,11 +211,11 @@ public class DeckOfCards {
          cardActuall = arrayOfPlayerCards[i];
          for(int j = i+1; j < arrayOfPlayerCards.length; j++) {
 
-            if(cardActuall.getFace().equals(arrayOfPlayerCards[j].getFace())) { //jesli sa 2 takie same to szukaj nastepnych 2 kart po figurze
-               tableOfCardsToBeSkipped[i] = i+1; // 1 karta do pominiecia
-               tableOfCardsToBeSkipped[j] = j+1; // 2 karta do pominiecia
-               if(lookForTheThirdAndFourFigure()) { // 3 i 4 karta do pominiecia po figurze
-                  cardsPlayer.setCurrentPlayerCardScore(tableOfCardsToBeSkipped); // 4 karty takie same np. 4 asy
+            if(cardActuall.getFace().equals(arrayOfPlayerCards[j].getFace())) { //if two are the same, look for the next two cards after the figure
+               tableOfCardsToBeSkipped[i] = i+1; // first card to skip
+               tableOfCardsToBeSkipped[j] = j+1; // second card to skip
+               if(lookForTheThirdAndFourFigure()) {
+                  cardsPlayer.setCurrentPlayerCardScore(tableOfCardsToBeSkipped);
                   fillInTableOfCardsToBeSkippedWithZeros();
                   return true;
                }
@@ -268,7 +228,7 @@ public class DeckOfCards {
    }
 
 
-   //znajdz 3 i 4  taka sama karta po figurze
+
    private boolean lookForTheThirdAndFourFigure() {
       if(lookForTheThirdOrFourFigure()) { // 3 figure
          if(lookForTheThirdOrFourFigure()) { // 4 figure found
@@ -279,7 +239,7 @@ public class DeckOfCards {
    }
 
 
-   //5 kart o tym samym kolorze
+
    public boolean fiveCardsOfTheSameSuit(Player cardsPlayer) {
       arrayOfPlayerCards = cardsPlayer.getCardsOfPlayer();
       int counter = 0;
@@ -295,20 +255,20 @@ public class DeckOfCards {
       if(counter == 5) {
          cardsPlayer.setCurrentPlayerCardScore(tableOfCardsToBeSkipped);
          fillInTableOfCardsToBeSkippedWithZeros();
-         return true; // jesli 5 takich samych kolorow u playera
+         return true;
       } else {
          return false;
       }
    }
 
-   //POKER -> pięć kolejnych figur w takim samym kolorze
+   //POKER
    public boolean fiveConsecutiveCardsOfTheSameSuit(Player cardsPlayer) {
       int indexFirstCard;
       int indexSecondCard;
-      //najpierw sprawdzam czy w takim samym kolorze
-      if( fiveCardsOfTheSameSuit(cardsPlayer) ) { //true
+      // first checks for the same color
+      if( fiveCardsOfTheSameSuit(cardsPlayer) ) {
 
-         //segregujemy rosnąco karty
+         //sorts cards in ascending order
          for(int i = 0; i < arrayOfPlayerCards.length; i++) {
             indexFirstCard = getNumberIndexArrayCardsStringOfFaces(arrayOfPlayerCards[i]);
 
@@ -316,7 +276,7 @@ public class DeckOfCards {
                indexSecondCard = getNumberIndexArrayCardsStringOfFaces(arrayOfPlayerCards[j]);
 
                if( indexFirstCard > indexSecondCard) {
-                  cardActuall = arrayOfPlayerCards[i]; //tymczasowa karta
+                  cardActuall = arrayOfPlayerCards[i];
                   arrayOfPlayerCards[i] = arrayOfPlayerCards[j];
                   arrayOfPlayerCards[j] = cardActuall;
                }
@@ -324,14 +284,14 @@ public class DeckOfCards {
             }
          }
 
-         //nastepnie sprawdzamy czy piec kolejnych figur
+         //then check check the order of the cards
          int orderValue, nextCardIndex, counter = 1;
          orderValue = getNumberIndexArrayCardsStringOfFaces(arrayOfPlayerCards[0]);
 
          for(int i = 1; i < arrayOfPlayerCards.length; i++) {
             nextCardIndex = getNumberIndexArrayCardsStringOfFaces(arrayOfPlayerCards[i]);
 
-            if(orderValue + i == nextCardIndex) { // np orderValue = 2 potem dodajemy 1 = 3 czyli 3 == nextCardIndex = 3 jesli true to jest kolejnosc
+            if(orderValue + i == nextCardIndex) {
                counter++;
             }
          }
@@ -344,7 +304,7 @@ public class DeckOfCards {
       return false;
    }
 
-   //podaje nr indeksu z tablicy cardsStringOfFaces -> pomocna przy sprawdzaniu kolejnosci figur
+   //gives the index number from the cardsStringOfFaces table -> helpful when checking the order of figures
    private int getNumberIndexArrayCardsStringOfFaces(Card card) {
 
       for(int i = 0; i < cardsStringOfFaces.length; i++) {
@@ -355,152 +315,15 @@ public class DeckOfCards {
       return 0;
    }
 
-
-   ///////////////////////////////////////
-   //for tests
-   public Card[] returnToArrayCardToTests(Card[] cardsTest) {
-      int counter = 0;
-      for(int i = 0; i < deck.length; i++) {
-         for(int j = 0; j < deck.length; j++) {
-            if(deck[i].getSuit().equals(deck[j].getSuit())) {
-
-               if(counter < cardsTest.length) {
-                  cardsTest[counter] = deck[j];
-                  counter++;
-               } else {
-                  return cardsTest;
-               }
-            }
-         }
-      }
-
-      return cardsTest;
-   }
-
-   //tests 1 pair
-   public void returnToCardsForOnePairTests(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[0];  // two
-      cardsOfPlayer[1] = testDeck[13]; // two
-      cardsOfPlayer[2] = testDeck[14]; //
-      cardsOfPlayer[3] = testDeck[15]; //
-      cardsOfPlayer[4] = testDeck[18]; //
-   }
-
-   //tests 2 pairs
-   public void returnToCardsForTwoPairsTests(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[0];  // two
-      cardsOfPlayer[1] = testDeck[13]; // two
-      cardsOfPlayer[2] = testDeck[1];  // three
-      cardsOfPlayer[3] = testDeck[14]; // three
-      cardsOfPlayer[4] = testDeck[18]; //
-   }
-
-
-   //tests 3 cards of same FIGURE
-   public void returnToCardsForThreeCardsOfOneFigureTest(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[0];  // two
-      cardsOfPlayer[1] = testDeck[13]; // two
-      cardsOfPlayer[2] = testDeck[26];  // two
-      cardsOfPlayer[3] = testDeck[27]; //
-      cardsOfPlayer[4] = testDeck[28]; //
-   }
-
-
-
-
-   //tests 3 cards of same FIGURE
-   public void returnToCardsForThreeCardsOfOneFigureTestHighCardFirst(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[0];  // two
-      cardsOfPlayer[1] = testDeck[13]; // two
-      cardsOfPlayer[2] = testDeck[26];  // two
-      cardsOfPlayer[3] = testDeck[27]; //
-      cardsOfPlayer[4] = testDeck[28]; //
-   }
-
-   // 3 cards of Figure the same -> HIGH CARD
-   public void returnToCardsForThreeCardsOfOneFigureTestHighCardSecond(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[1]; // ace
-      cardsOfPlayer[1] = testDeck[11]; // king
-      cardsOfPlayer[2] = testDeck[0]; // ace
-      cardsOfPlayer[3] = testDeck[24]; // king
-      cardsOfPlayer[4] = testDeck[37]; // king
-   }
-
-
-   //tests 4 cards of same FIGURE
-   public void returnToCardsForFourCardsOfOneFigureTest(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[0];  // two
-      cardsOfPlayer[1] = testDeck[13]; // two
-      cardsOfPlayer[2] = testDeck[26];  // two
-      cardsOfPlayer[3] = testDeck[39]; // two
-      cardsOfPlayer[4] = testDeck[43]; //
-   }
-
-   //tests 5 cards of this same suit
-   public Card[] returnTocardsFiveOfTheSameSuitForTests(Card[] cardToTest) {
-
-      cardToTest[0] = testDeck[13]; // two
-      cardToTest[1] = testDeck[15]; // three
-      cardToTest[2] = testDeck[17]; // four
-      cardToTest[3] = testDeck[19]; // five
-      cardToTest[4] = testDeck[21]; // six
-
-      return cardToTest;
-   }
-
-
-   //tests 5 cards of this same suit and consecutives -> poker
-   public Card[] returnToCardsFiveConsecutiveCardForTests(Card[] cardToTest) {
-
-      cardToTest[0] = testDeck[0]; // two
-      cardToTest[1] = testDeck[1]; // three
-      cardToTest[2] = testDeck[2]; // four
-      cardToTest[3] = testDeck[3]; // five
-      cardToTest[4] = testDeck[4]; // six
-
-      return cardToTest;
-   }
-
-   //tests 1 pair of figure and 3 cards of Figure the same -> FULL
-   public void returnToCardsForFullTests(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[12]; // ace
-      cardsOfPlayer[1] = testDeck[11]; // king
-      cardsOfPlayer[2] = testDeck[25]; // ace
-      cardsOfPlayer[3] = testDeck[24]; // king
-      cardsOfPlayer[4] = testDeck[37]; // king
-   }
-
-   //for tests no poker hand !!!!!!!!!!!!!!!!!!!!!
-   public void returnNoPokerHandInPlayerForTest(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[17]; // six
-      cardsOfPlayer[1] = testDeck[2]; // four
-      cardsOfPlayer[2] = testDeck[29]; // five
-      cardsOfPlayer[3] = testDeck[39]; // two
-      cardsOfPlayer[4] = testDeck[11]; // king
-   }
-
-   //for tests no poker hand !!!!!!!!!!!!!!!!!!!!!
-   public void returnNoPokerHandInPlayerTESTForTest(Card[] cardsOfPlayer) {
-      cardsOfPlayer[0] = testDeck[12]; // ase
-      cardsOfPlayer[1] = testDeck[2]; // four
-      cardsOfPlayer[2] = testDeck[5]; // five
-      cardsOfPlayer[3] = testDeck[39]; // two
-      cardsOfPlayer[4] = testDeck[11]; // king
-   }
-
-
-
-
-
    // a pair of figures and three figures the same -> FULL
    public boolean pairOfFiguresAndThreeFiguresTheSame(Player cardsOfPlayer) {
 
-      //sprawdzamy czy jest jedna para kart
+      //checks if there is one pair of cards
       if( pairOfCards(cardsOfPlayer) ) {
-         completesTheCardsToBeSkipped(cardsOfPlayer);// przypisuje 2 karty ktore tworza pare do pominiecia
-         //sprawdzamy czy sa 3 karty tej samej figury
+         completesTheCardsToBeSkipped(cardsOfPlayer);
+         //checks if there are three cards of the same figure
          if( threeCardsOfOneFigure(cardsOfPlayer)) {
-            //jest FULL to segregujemy tablice 5 cards zawodnika
+            //is FULL, he segregates 5 player cards
             setTheOrderForFull( cardsOfPlayer.getCardsOfPlayer() );
             return true;
          }
@@ -508,11 +331,9 @@ public class DeckOfCards {
      return false;
    }
 
-
-   //ustawia w kolejnosci dla FULLA
    private void setTheOrderForFull(Card[] cardsOfPlayer) {
 
-      //first czesc
+      //first part
       int counter = 0;
       for(int i = 0; i < cardsOfPlayer.length; i++) {
 
@@ -532,7 +353,6 @@ public class DeckOfCards {
       }
    }
 
-   ///////////////////////////////////////
 }
 
 
